@@ -48,12 +48,7 @@ jobs:
          uses: actions/checkout@main
 
        - name: initialization
-         run: |
-           docker rmi `docker images -q`
-           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
-           sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-           sudo -E apt-get clean 
-           sudo apt install expect -y
+         run: sudo apt install expect -y
        - name: cloning repo
          run: |
            expect -c " 
@@ -72,7 +67,7 @@ jobs:
            docker container prune --force
            docker build . -t leecher
        - name: running Docker
-         timeout-minutes: 300
+         timeout-minutes: 340
          run: |
            docker run leecher
        - name: Loop workflow
