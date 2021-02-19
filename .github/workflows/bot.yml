@@ -1,17 +1,8 @@
 name: setting up environment
 
 on:
-#  release:
-#    types: [published]
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - '.config'
-#  schedule:
-#    - cron: 0 8 * * 5
-  watch:
-    types: [started]
+  push:
+  workflow_dispatch:
     
 
 jobs:
@@ -81,5 +72,23 @@ jobs:
            docker container prune --force
            docker build . -t leecher
        - name: running Docker
+         timeout-minutes: 300
          run: |
            docker run leecher
+       - name: Loop workflow
+         continue-on-error: true
+         run: |
+              git clone https://github.com/DannySalvatore/mirrorbot-workflow loop
+              cd loop
+              echo "1" >> loop.txt
+              git add loop.txt
+              git commit -m "Workflow : Loop"
+              expect -c "
+              spawn git push -f 
+              expect \"Username\"
+              send \"${{ secrets.GHUSER }}\r\"
+              expect \"Password\"
+              send \"${{ secrets.GHPASS }}\r\"
+              expect \"main -> main\"
+              set timeout -10
+              interact"
