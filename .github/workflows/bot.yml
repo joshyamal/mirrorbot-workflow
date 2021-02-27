@@ -67,6 +67,7 @@ jobs:
            docker container prune --force
            docker build . -t leecher
        - name: running Docker
+         continue-on-error: true
          timeout-minutes: 320
          run: |
            docker run leecher
